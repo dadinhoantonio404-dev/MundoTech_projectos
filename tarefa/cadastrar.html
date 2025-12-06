@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cadastrar Atleta</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="scripts.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Cadastrar Atleta</h1>
+
+    <form id="cadastroForm" class="panel">
+      <div class="grid">
+        <div class="col-6">
+          <label class="label">Nome completo</label>
+          <input type="text" class="input" id="nome" required />
+        </div>
+
+        <div class="col-3">
+          <label class="label">Data de nascimento (DD/MM/AAAA)</label>
+          <input type="text" class="input" id="data_nasc" required pattern="\\d{2}/\\d{2}/\\d{4}" placeholder="dd/mm/aaaa" />
+        </div>
+
+        <div class="col-3">
+          <label class="label">Morada (Município)</label>
+          <select class="select" id="morada" required></select>
+        </div>
+
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">Cadastrar</button>
+          <button type="reset" class="btn btn-outline">Limpar</button>
+        </div>
+      </div>
+    </form>
+
+    <div id="mensagem"></div>
+  </div>
+
+  <script>
+    // Popula municípios a partir dos clubes existentes
+    (async () => {
+      const clubes = await fetch('../backend/api/listar_clubes.php').then(r => r.json());
+      const select = document.getElementById('morada');
+      const municipios = [...new Set(clubes.map(c => c.municipio))].sort();
+      municipios.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        select.appendChild(opt);
+      });
+    })();
+
+    document.getElementById('cadastroForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      cadastrarAtleta();
+    });
+  </script>
+</body>
+</html>
